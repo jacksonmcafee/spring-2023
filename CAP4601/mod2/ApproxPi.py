@@ -8,6 +8,7 @@ Assumptions: N/A
 All work below was performed by Jackson McAfee
 """
 
+# stores pi calculation formula
 def calc_pi(n):
     # store a persistent value that starts at zero
     val = 0
@@ -27,7 +28,8 @@ def calc_pi(n):
     # return value * 4 because this formula computes pi/4
     return 4*val
 
-if __name__ == "__main__":
+# controls program struture
+def main():
     # get user input
     while(True):
         # until user input is a value greater than zero, do not continue
@@ -36,3 +38,7 @@ if __name__ == "__main__":
             break
     # calculate pi and print it
     print(f'The value of pi to {n} digits is {calc_pi(n)}')
+
+# run main
+if __name__ == "__main__":
+    main()

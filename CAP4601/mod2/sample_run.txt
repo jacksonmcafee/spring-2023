@@ -1,0 +1,9 @@
+(base) [jacksonm@elitebook mod2]$ python3 ApproxPi.py 
+Input the number of digits you want computed here: -1000
+Input the number of digits you want computed here: -05
+Input the number of digits you want computed here: 0
+Input the number of digits you want computed here: 1000
+The value of pi to 1000 digits is 3.140592653839794
+(base) [jacksonm@elitebook mod2]$ 
+
+
