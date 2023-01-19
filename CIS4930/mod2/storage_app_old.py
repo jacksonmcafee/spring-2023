@@ -21,21 +21,25 @@ All work below was performed by Jackson McAfee
 class Song:
 
     # default constructor
-    def __init__(self):
-        self.song_title = ""
-        self.song_album = ""
-        self.song_artist = ""
-        self.song_review = ""
-        self.song_length = 0
-        self.song_rating = 0
+    def __init__(self, title, album, artist, review, length, rating):
+        self.song_title = title
+        self.song_album = album
+        self.song_artist = artist
+        self.song_length = length
+        self.song_rating = rating
+        self.song_review = review
 
-    # used for printing song as a string
     def __str__(self):
         song_mins = self.song_length // 60
         song_secs = self.song_length % 60 
         if song_secs == 0:
             song_secs = "00"
         return f'Song Title: {self.song_title}\nAlbum: {self.song_album}\nArtist: {self.song_artist}\nSong Length: {song_mins}:{song_secs}\nRating: {self.song_rating}\nReview: {self.song_review}\n'
+
+    # print all stored values
+    def print_song(self):
+        print(f'\nThe song that you input is... \n------------------------')
+        print(self)
 
     # attribute setters
     def set_title(self, title):
@@ -50,6 +54,8 @@ class Song:
         self.song_rating = rating
     def set_review(self, review):
         self.song_review = review
+    def set_edit(self, edit):
+        self.edit = edit
 
     # attribute getters
     def get_title(self):
@@ -64,18 +70,42 @@ class Song:
         return self.song_rating
     def get_review(self):
         return self.song_review
+    def get_edit(self):
+        return self.edit
 
-# returns user input for basic strings, validates that strings are not empty, nor are they only spaces 
-def get_user_input(type):
+def set_song_name(song):
     while (True):
-        user_in = input(f'Input your {type}: ')
-        if ((len(user_in) == user_in.count(' ')) or len(user_in) == 0):
+        title = input(f'Input your song title: ')
+        # verify that the title isn't empty or exclusively spaces
+        if ((len(title) == title.count(' ')) or len(title) == 0):
             print(f'Please input your string again. It cannot be composed of exclusively spaces.')
             continue
         else:
-            return user_in
+            song.set_title(title)
+            break
 
-# sets the "review" value for a song
+def set_album_name(song):
+    while (True):
+        album = input(f'Input your album title: ')
+        # verify that the album title isn't empty or exclusively spaces
+        if ((len(album) == album.count(' ')) or len(album) == 0):
+            print(f'Please input your string again. It cannot be composed of exclusively spaces.')
+            continue
+        else:
+            song.set_album(album)
+            break
+
+def set_artist_name(song):
+    while (True):
+        artist = input(f'Input your artist name: ')
+        # verify that the artist's name isn't empty or exclusively spaces
+        if ((len(artist) == artist.count(' ')) or len(artist) == 0):
+            print(f'Please input your string again. It cannot be composed of exclusively spaces.')
+            continue
+        else:
+            song.set_artist(artist)
+            break    
+
 def set_review(song):
     while (True):
         review = input(f'Input your review: ')
@@ -87,7 +117,6 @@ def set_review(song):
             song.set_review(review)
             break  
 
-# sets the length in seconds for the song
 def set_length(song):
     while (True):
         length = input(f'Input your song length in seconds: ')
@@ -106,7 +135,6 @@ def set_length(song):
         else:
             print(f'Please input a positive integer between 1 and 2250.\n')
 
-# sets the "rating" for the song from 0-5
 def set_rating(song):
     while (True):
         rating = input(f'Input your song rating: ')
@@ -125,41 +153,15 @@ def set_rating(song):
         else:
             print(f'Please input a real number with no spaces from 0-5.')
 
-def add_song(song, edit):
-    
-    # get user input for title
-    if edit[0] : print(f'Current title is: {song.get_title()}')
-    song.set_title(get_user_input("title"))
+# controls program structure
+def main():
+    # create song object for storage
+    song = Song("", "", "", "", 0, 0)
+    edit = [False]
 
-    # get user input for album name
-    if edit[0] : print(f'Current album name is: {song.get_album()}')
-    song.set_album(get_user_input("album"))
-
-    # get user input for artist name
-    if edit[0] : print(f'Current artist is: {song.get_artist()}')
-    song.set_artist(get_user_input("artist"))
-
-    # get user input for song review
-    if edit[0] : print(f'Current review is: {song.get_review()}')
-    set_review(song)
-    
-    # get user input for length in seconds
-    if edit[0] : print(f'Current song length is: {song.get_length()}')
-    set_length(song)
-
-    # get user input for rating from 0 - 5 (float)
-    if edit[0] : print(f'Current rating is: {song.get_rating()}')
-    set_rating(song)
-
-    return True
-
-# prints song information if a song has been added
-def display_song(song, edit):
-    if (edit[0] == False):
-        print(f'\nSong has not been added. Please add a song before selecting this option.\n')
-    else:
-        print(f'\nThe song that you input is... \n------------------------')
-        print(song)
+    # until user quits via the menu, continue to run the menu
+    while(True):
+        menu(song, edit)
 
 # controls program menu
 def menu(song, edit):
@@ -179,26 +181,50 @@ def menu(song, edit):
         else:
             print(f'Please input one of the options as a single character.\n')
 
-    # match input case and run functions accordingly
     if str_input == 'A':
         # add song
         edit[0] = add_song(song, edit)
     elif str_input == 'B':
-        # display stored values 
-        display_song(song, edit)
+        # list stored values 
+        list_song(song, edit)
     else:
         print(f'Exiting program now!')
         exit(0)
 
-# controls program structure
-def main():
-    # create song object for storage, edit flag for menu functionality
-    song = Song()
-    edit = [False]
+def add_song(song, edit):
+    
+    # get user input for title
+    if edit[0] : print(f'Current title is: {song.get_title()}')
+    set_song_name(song)
 
-    # until user quits via the menu, continue to run the menu
-    while(True):
-        menu(song, edit)
+    # get user input for album name
+    if edit[0] : print(f'Current album name is: {song.get_album()}')
+    set_album_name(song)
+
+    # get user input for artist name
+    if edit[0] : print(f'Current artist is: {song.get_artist()}')
+    set_artist_name(song)
+
+    # get user input for song review
+    if edit[0] : print(f'Current review is: {song.get_review()}')
+    set_review(song)
+    
+    # get user input for length in seconds
+    if edit[0] : print(f'Current song length is: {song.get_length()}')
+    set_length(song)
+
+    # get user input for rating from 0 - 5 (float)
+    if edit[0] : print(f'Current rating is: {song.get_rating()}')
+    set_rating(song)
+
+    return True
+
+# prints song information if a song has been added
+def list_song(song, edit):
+    if (edit[0] == False):
+        print(f'\nSong has not been added. Please add a song before selecting this option.\n')
+    else:
+        song.print_song()
 
 # run the program by default
 if __name__ == "__main__":
