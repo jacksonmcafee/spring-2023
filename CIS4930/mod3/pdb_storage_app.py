@@ -1,10 +1,19 @@
+"""
+Name: Jackson McAfee
+Date: 2023-01-31
+Assignment: Assignment 2
+Due Date: 2023-01-29
+About this project: Stores song data including a title, album name, artist name, etc. Uses PickleDB to create a database for storage.  
+Assumptions: N/A
+All work below was performed by Jackson McAfee
+"""
+
+
 import pickledb as pdb
 import datetime as dt
 from datetime import date
-import os
-import time
-from pathlib import Path
 
+# get string input from user as needed 
 def get_user_input(type):
     while (True):
         user_in = input(f'Input your {type}: ')
@@ -14,6 +23,7 @@ def get_user_input(type):
         else:
             return user_in
 
+# get song review 
 def get_review():
     while (True):
         user_in = input(f'Input your review: ')
@@ -24,6 +34,7 @@ def get_review():
         else:
             return user_in
 
+# get song length
 def get_length():
     while (True):
         user_in = input(f'Input your song length in seconds: ')
@@ -41,6 +52,7 @@ def get_length():
         else:
             print(f'Please input a positive integer between 1 and 2250.\n')
 
+# get song rating
 def get_rating():
     while (True):
         user_in = input(f'Input your song rating: ')
@@ -88,10 +100,16 @@ def add_song(db, edit):
 
 # prints song
 def print_song(db):
+    # break length in seconds down to mins:seconds
+    length = db.dget('Song', 'length')
+    min = length // 60
+    sec = length % 60
+
     print("Song title: ", db.dget('Song', 'title'), "\nAlbum title: ", db.dget('Song', 'album'))
     print("Artist: ", db.dget('Song', 'artist'), "\nReview: ", db.dget('Song', 'review'))
-    print("Length: ", db.dget('Song', 'length'), "\nRating: ", db.dget('Song', 'rating'), "\n")
+    print("Length: ", min, ":", sec, "\nRating: ", db.dget('Song', 'rating'), "\n")
 
+# deletes database
 def delete_song(db, edit):
     print("Deleting database...")
     db.deldb()
@@ -129,10 +147,18 @@ def menu(db, edit):
         db.dump()
         exit(0)
 
+# controls program flow
 def main():
     # load and set up db
     db = pdb.load('song.db', True)
     db.dcreate('Song')
+
+    # today = dt.datetime.now().date()
+    #filetime = dt.datetime.fromtimestamp(os.path.getmtime('song.db'))
+    # if filetime.date() == today:
+    #    edit = [True]
+    # else:
+    #    edit = [False]
 
     edit = [False]
 
@@ -140,5 +166,6 @@ def main():
     while(True):
         menu(db, edit)
 
+# enters main function
 if __name__ == '__main__':
     main()

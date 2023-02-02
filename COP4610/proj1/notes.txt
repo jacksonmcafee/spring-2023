@@ -1,0 +1,47 @@
+TODO: 
+- parse function to parse stdin (argv)
+- execute function to run commands 
+- main function to control program flow
+
+CMDLINE Params:
+- define QUIT as a command
+- handle empty commands
+- handle extra white space
+- handle improperly formatted command inputs
+    - inputs without semicolons
+    - inputs with quit as the first command
+
+int main( int argc, char *argv[] ) {
+    # create vars
+    char line[1024];
+    char *argv[64];
+    char *c = NULL;
+
+    # check if a batchfile was passed to determine mode 
+    if (argc == 1) {
+        # no arguments passed, enter interactive mode
+
+    } else if (argc == 2) {
+        # batchfile (maybe) passed, enter batch mode 
+
+        # attempt to open batchfile
+            # if batchfile opens, continue
+
+            # else, exit gracefully
+
+    } else {
+        # invalid number of parameters passed, exit gracefully
+    
+    }
+}
+
+interactive mode loop:
+    printf("prompt> ");
+    while (fgets(line, sizeof(line), stdin)) {
+      /* repeat until EOF .... */
+      parse(line, argv);                 /*   parse the line     */
+      if (strcmp(argv[0], "quit") == 0)  /* is it an "exit"?     */
+	exit(0);                         /*   exit if it is      */
+      execute(argv);             /* otherwise, execute the command */
+      printf("prompt> ");       /*   display a prompt             */
+    }
