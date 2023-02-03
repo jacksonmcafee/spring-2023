@@ -15,11 +15,10 @@ void parse (char* line, char** argv)
   static char* delimiter = " \n\t";
   char *token = strtok(line, delimiter);
   while (token != NULL) {
-    *argv++ = token;
-    token = strtok(NULL, delimiter);
-    printf(token);
+     *argv++ = token;
+     token = strtok(NULL, delimiter);
+     printf(token);
   }
-                      perror("Error: ");
 
   *argv = (char *)'\0';   /* mark the end of argument list  */
 }

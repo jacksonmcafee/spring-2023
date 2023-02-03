@@ -14,7 +14,6 @@ CMDLINE Params:
 int main( int argc, char *argv[] ) {
     # create vars
     char line[1024];
-    char *argv[64];
     char *c = NULL;
 
     # check if a batchfile was passed to determine mode 
