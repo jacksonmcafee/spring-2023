@@ -17,7 +17,7 @@ extern FILE *stderr;
 /* first one being a file name followed by its arguments.  Then,     */
 /* this function forks a child process to execute the command using  */
 /* system call execvp().                                             */
-/* Unmodified version from mtu-shell.c                               */
+/* Lightly modified version from mtu-shell.c                         */
 /* ----------------------------------------------------------------- */
 
 void execute(char **argv)
@@ -31,13 +31,14 @@ void execute(char **argv)
      }
      else if (pid == 0) {          /* for the child process:         */
           if (execvp(*argv, argv) < 0) {     /* execute the command  */
-               printf("*** ERROR: exec failed\n");
+               printf("*** ERROR: That command does not exist! \n");
                exit(1);
           }
      }
      else {                                  /* for the parent:      */
           while (wait(&status) != pid)       /* wait for completion  */
                ;
+          printf("Process with PID %d exited with status %d.\n", pid, status);
      }
 }
 
@@ -74,17 +75,14 @@ char* parse_spaces(char *str)
 *    passed to the command when execvp() is called. 
 */
 
-int parse_commands(char* command, char** args) {
-     int arg_count = 0;
-     static char* delimiter = " ";
+void parse_commands(char* command, char** args) {
+     static char* delimiter = "\n\t ";
      char* token = strtok(command, delimiter);
      while (token != NULL) {
           *args++ = token;
           token = strtok(NULL, delimiter);
-          arg_count++;
      }
      *args = (char *)'\0';   /* mark the end of argument list  */
-     return arg_count;
 }
 
 /*
@@ -97,7 +95,7 @@ int parse_commands(char* command, char** args) {
 int parse_args (char* line, char** argv)
 {
      int token_count = 0;     // store a token count for later
-     static char* delimiter = ";\n\t";      // add ; as a delim
+     static char* delimiter = ";";      // add ; as a delim
      char* token = strtok(line, delimiter);
      while (token != NULL) {
           // remove whitespace from front and back of token
@@ -115,6 +113,7 @@ int parse_args (char* line, char** argv)
 *    Controls primary program flow. Based on the number of arguments passed, it determines what mode
 *    the shell is running in (interactive / batch). It then loops through the arguments and deals with them
 *    as needed.
+*    Heavily modified version of main() in mtu-shell.c
 */
 
 int main (int argc, char* argv[]) {
@@ -141,17 +140,19 @@ int main (int argc, char* argv[]) {
                for (int i = 0; i < token_count; i++) {
                     // parse the commands into command and args
                     if(argv[i][0] == '\0') {
+                         // if str is parsed to be empty, continue to next
                          continue;
                     }
 
-                    int arg_count = parse_commands(argv[i], args);          
+                    // parse spaces from front and back of commands
+                    parse_commands(argv[i], args);
 
-                    if (strcmp(args[i], "quit") == 0) {
+                    // THIS IS BREAKING
+                    if (strcmp(args[0], "quit") == 0) {
                          // quit command reached, execute at the end of this iteration
                          quit_flag = true;
                          continue; 
                     } else {
-                         printf("Executing!! \n\n");
                          execute(args);
                     }               
                }
@@ -183,29 +184,40 @@ int main (int argc, char* argv[]) {
           // batchfile opened, start to parse line by line
 
           while(fgets(line, sizeof(line), fptr)) {
-               // echo line to stdin, parse through argv 
-               printf("%s", line);
-               token_count = parse_args(line, argv);
-               
-               // check if any argv is "quit", then set flag
-               for (int i = 0; i < token_count; i++) {
+               // echo command 
+               printf("+%s", line);
 
-                    if (strcmp(argv[0], "quit") == 0) {
-                         // quit command reached, execute at the end of this loop
-                         quit_flag = true;
+               // parse through argv 
+               token_count = parse_args(line, argv);
+
+               // loop through the number of commands
+               for (int i = 0; i < token_count; i++) {
+                    // parse the commands into command and args
+                    if(argv[i][0] == '\0') {
+                         // if str is parsed to be empty, continue to next
+                         continue;
                     }
+
+                    // parse spaces from front and back of commands
+                    parse_commands(argv[i], args);
+
+                    // THIS IS BREAKING
+                    if (strcmp(args[0], "quit") == 0) {
+                         // quit command reached, execute at the end of this iteration
+                         quit_flag = true;
+                         continue; 
+                    } else {
+                         execute(args);
+                    }               
                }
 
-               // TODO: execute each function from argv concurrently
-
                // if quit was previously marked, exit during this loop
-               if (quit_flag) { exit(0); }              
+               if (quit_flag) { exit(0); }             
           }
-          
 
      // invalid number of parameters passed, exit gracefully     
      } else {
-          printf("File not found OR cannot be opened.\n");
+          printf("Invalid number of arguments passed.\n");
           exit(-1);
      }
 }
