@@ -1,14 +1,17 @@
-CC=gcc
-DEBUG=-g -O0
-CFLAGS=$(DEBUG)
+OBJS	= shell.o
+SOURCE	= shell.c
+HEADER	= 
+OUT	= tinysh
+CC	 = gcc
+FLAGS	 = -g -c -Wall
+LFLAGS	 = 
 
-all: mtu-shell.exe
+all: $(OBJS)
+	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-.c.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
+shell.o: shell.c
+	$(CC) $(FLAGS) shell.c -std=c99
 
-mtu-shell.exe: mtu-shell.o
-	$(CC) -o $@ $<
 
 clean:
-	rm -f *.o mtu-shell.exe \#*\# *~
+	rm -f $(OBJS) $(OUT)
