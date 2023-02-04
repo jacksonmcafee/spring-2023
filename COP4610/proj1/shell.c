@@ -11,11 +11,14 @@ extern FILE *stdin;
 extern FILE *stdout;
 extern FILE *stderr;
 
-/*
-*    Function execute():
-*    
-*
-*/
+/* ----------------------------------------------------------------- */
+/* FUNCTION execute:                                                 */
+/*    This function receives a commend line argument list with the   */
+/* first one being a file name followed by its arguments.  Then,     */
+/* this function forks a child process to execute the command using  */
+/* system call execvp().                                             */
+/* Unmodified version from mtu-shell.c                               */
+/* ----------------------------------------------------------------- */
 
 void execute(char **argv)
 {
@@ -118,7 +121,6 @@ int main (int argc, char* argv[]) {
      // create arrays, vars, and bool flags
      char line[1024];
      char* args[1024];
-     char *c = NULL;
 
      setbuf(stdout, NULL);
 
@@ -138,19 +140,18 @@ int main (int argc, char* argv[]) {
                // loop through the number of commands
                for (int i = 0; i < token_count; i++) {
                     // parse the commands into command and args
-                    int arg_count = parse_commands(argv[i], args);
-
-                    if ((args[i] != NULL) && (*args[0] == '\0')) {
-                         // check if the command is empty
+                    if(argv[i][0] == '\0') {
                          continue;
-                    } else if (strcmp(args[i], "quit") == 0) {
+                    }
+
+                    int arg_count = parse_commands(argv[i], args);          
+
+                    if (strcmp(args[i], "quit") == 0) {
                          // quit command reached, execute at the end of this iteration
                          quit_flag = true;
+                         continue; 
                     } else {
-                         printf("command -> %s\n", args[0]);
-                         for (int j = 1; j < arg_count; j++) {
-                              printf("args -> %s\n", args[j]);
-                         }
+                         printf("Executing!! \n\n");
                          execute(args);
                     }               
                }
@@ -207,5 +208,4 @@ int main (int argc, char* argv[]) {
           printf("File not found OR cannot be opened.\n");
           exit(-1);
      }
-
 }
