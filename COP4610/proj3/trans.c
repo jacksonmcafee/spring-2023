@@ -68,6 +68,9 @@ int main(int argc, char **argv) {
     void *shm_base;
     int shm_fd;
 
+    // no file descriptors passed with toChild and toParent??
+    // should I not include file descriptors for both before creating pipes between them?
+
     // create pipe to Child process
     if (pipe(toChild) == -1) {
         fprintf(stderr, "\ntoChild pipe creation failed. Exiting. \n\n");
@@ -89,9 +92,12 @@ int main(int argc, char **argv) {
     int blocks_read = 0;
     int expected_size = 0;
 
+    /* 
+    Following is heavily based on the pipe man page.
+    */
+
     // spilt into two processes
-    pid = fork();
-    if (pid < 0) {
+    if (pid = fork() < 0) {
         fprintf(stderr, "\nfork() failed. Exiting.\n\n");
         return 1;
     }
