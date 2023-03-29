@@ -1,3 +1,5 @@
+#define BUF_SIZE 4096
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -7,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#define SHM_NAME "/my_shm"
 #define READ_END 0
 #define WRITE_END 1
 #define BUFFER_SIZE 4096
@@ -21,7 +24,8 @@ struct{
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        printf("Usage: trans <input-file> <output-file>\n\n");
+        printf("\n**Two arguments are required: an input file and an output file. \n");
+        printf("Try again in this format: tans <input-file> <output-file>\n\n");
         return 1;
     }
 
